@@ -1,0 +1,35 @@
+{
+  "name": "blu/foundation",
+  "description": "Fundamenty aplikacji Blu: core, middleware, security, sesje, walidacja oraz helpery do widoków.",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "Blu\\Foundation\\": "src/"
+    }
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Twoje Imię",
+      "email": "twoj@email.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": "^8.4",
+    "slim/slim": "^4.14",
+    "psr/http-message": "^1.0",
+    "psr/http-server-middleware": "^1.0",
+    "psr/container": "^1.0 || ^2.0",
+    "slim/twig-view": "^3.4",
+    "twig/extra-bundle": "^3.20",
+    "predis/predis": "^2.3",
+    "guzzlehttp/psr7": "^2.7",
+    "slim/csrf": "^1.5",
+    "ramsey/uuid": "^4.7",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-zip": "*"
+  }
+}
