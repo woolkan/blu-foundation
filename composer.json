@@ -24,7 +24,7 @@
     "psr/container": "^1.0 || ^2.0",
     "slim/twig-view": "^3.4",
     "twig/extra-bundle": "^3.20",
-    "predis/predis": "^2.3",
+    "predis/predis": "^3.0",
     "guzzlehttp/psr7": "^2.7",
     "slim/csrf": "^1.5",
     "ramsey/uuid": "^4.7",
