@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 namespace Blu\Foundation\Security;
-
+use Blu\Foundation\Security\Exception\HoneypotException;
 
 class SimpleHoneypotService
 {
