@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 namespace Blu\Foundation\Security;
-use Blu\Foundation\Security\Exception\HoneypotException;
+use Blu\Foundation\Security\Exception\SecurityException;
 
 class SimpleHoneypotService
 {
@@ -14,6 +14,6 @@ class SimpleHoneypotService
     {
         $honeypot = trim($data['your_name'] ?? '');
         if (!empty($honeypot))
-            throw new HoneypotException(message: "Witaj bocie!");
+            throw new SecurityException(message: "Witaj bocie!");
     }
 }
