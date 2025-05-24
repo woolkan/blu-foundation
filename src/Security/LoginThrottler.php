@@ -22,8 +22,7 @@ class LoginThrottler
         $this->redis->expire($attemptKey, $this->attemptTTL);
 
         if ((int)$this->redis->get($attemptKey) >= $this->maxAttempts) {
-            $this->redis->setex($attemptKey,$this->attemptTTL, 0);
-            $this->redis->setex($blockKey, $this->blockTime, 1);
+            $this->blockAttempt($ip);
         }
     }
 
@@ -46,5 +45,14 @@ class LoginThrottler
     {
         $attemptKey = self::LOGIN_ATTEMPT_KEY.$ip;
         return (int)($this->redis->get($attemptKey) ?? 0);
+    }
+
+    public function blockAttempt(string $ip): void
+    {
+        $attemptKey = self::LOGIN_ATTEMPT_KEY.$ip;
+        $blockKey = self::LOGIN_BLOCK_KEY.$ip;
+
+        $this->redis->setex($attemptKey,$this->attemptTTL, 0);
+        $this->redis->setex($blockKey, $this->blockTime, 1);
     }
 }
