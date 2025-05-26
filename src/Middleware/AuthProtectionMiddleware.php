@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Blu\Foundation\Middleware;
 
+use Blu\Foundation\Core\ConfigManager;
 use Blu\Foundation\Security\Fingerprint;
 use Blu\Foundation\Security\LoginThrottler;
 use Blu\Foundation\Session\FlashRedis;
@@ -15,7 +16,7 @@ use Slim\Routing\RouteContext;
 
 readonly class AuthProtectionMiddleware implements MiddlewareInterface
 {
-    public function __construct(private LoginThrottler $throttler, private Fingerprint $fingerprint, private FlashRedis $flash){}
+    public function __construct(private LoginThrottler $throttler, private Fingerprint $fingerprint, private FlashRedis $flash, private string $configRedirectUri){}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -23,7 +24,7 @@ readonly class AuthProtectionMiddleware implements MiddlewareInterface
         $storedFingerprint = $_SESSION['fingerprint'] ?? null;
 
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-        $redirectUrl = $routeParser->urlFor('v2.login');
+        $redirectUrl = $routeParser->urlFor($this->configRedirectUri);
         if ($this->throttler->isBlocked($ip)) {
             $this->flash->set('auth_error', 'Dostęp zablokowany z powodu zbyt wielu prób logowania.');
             return new Response()->withHeader('Location', $redirectUrl)->withStatus(302);
