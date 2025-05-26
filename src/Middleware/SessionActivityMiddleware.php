@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Blu\Foundation\Middleware;
 
 use Blu\Foundation\Session\FlashRedis;
+use Blu\Foundation\Session\FlashRedisEnum;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,7 +24,7 @@ class SessionActivityMiddleware implements MiddlewareInterface
         $redirectUrl = $routeParser->urlFor($this->configRedirectUri);
 
         if (!isset($_SESSION['user'])) {
-            $this->flash->set('auth_error', 'Dostęp wymaga zalogowania.');
+            $this->flash->set(FlashRedisEnum::Flash_Msq_Key_Auth_Error->value, 'Dostęp wymaga zalogowania.');
             return (new Response())->withHeader('Location', $redirectUrl)->withStatus(302);
         }
 
@@ -32,7 +33,7 @@ class SessionActivityMiddleware implements MiddlewareInterface
 
         if (($now - $last) > $this->timeout) {
             session_destroy();
-            $this->flash->set('auth_error', 'Twoja sesja wygasła z powodu braku aktywności.');
+            $this->flash->set(FlashRedisEnum::Flash_Msq_Key_Auth_Error->value, 'Twoja sesja wygasła z powodu braku aktywności.');
             return (new Response())->withHeader('Location', $redirectUrl)->withStatus(302);
         }
 

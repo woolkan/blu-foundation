@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Blu\Foundation\Middleware;
 
-use Blu\Foundation\Core\ConfigManager;
 use Blu\Foundation\Security\Fingerprint;
 use Blu\Foundation\Security\LoginThrottler;
 use Blu\Foundation\Session\FlashRedis;
+use Blu\Foundation\Session\FlashRedisEnum;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,13 +26,13 @@ readonly class AuthProtectionMiddleware implements MiddlewareInterface
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
         $redirectUrl = $routeParser->urlFor($this->configRedirectUri);
         if ($this->throttler->isBlocked($ip)) {
-            $this->flash->set('auth_error', 'Dostęp zablokowany z powodu zbyt wielu prób logowania.');
+            $this->flash->set(FlashRedisEnum::Flash_Msq_Key_Auth_Error->value, 'Dostęp zablokowany z powodu zbyt wielu prób logowania.');
             return new Response()->withHeader('Location', $redirectUrl)->withStatus(302);
         }
 
         if (!$storedFingerprint || !$this->fingerprint->isValid($request, $storedFingerprint)) {
             session_destroy();
-            $this->flash->set('auth_error', 'Twoja sesja została przerwana z powodu błędnego fingerprinta.');
+            $this->flash->set(FlashRedisEnum::Flash_Msq_Key_Auth_Error->value, 'Twoja sesja została przerwana z powodu błędnego fingerprinta.');
             return new Response()->withHeader('Location', $redirectUrl)->withStatus(302);
         }
 
