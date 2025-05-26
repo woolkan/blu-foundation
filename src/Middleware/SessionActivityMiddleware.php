@@ -13,14 +13,14 @@ use Slim\Routing\RouteContext;
 
 class SessionActivityMiddleware implements MiddlewareInterface
 {
-    public function __construct(private int $timeout, private FlashRedis $flash){}
+    public function __construct(private int $timeout, private FlashRedis $flash, private string $configRedirectUri){}
     /**
      * @inheritDoc
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-        $redirectUrl = $routeParser->urlFor('v2.login');
+        $redirectUrl = $routeParser->urlFor($this->configRedirectUri);
 
         if (!isset($_SESSION['user'])) {
             $this->flash->set('auth_error', 'Dostęp wymaga zalogowania.');
