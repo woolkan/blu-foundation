@@ -22,10 +22,19 @@ class AssetVersionExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * Adds a cache-busting version parameter to an asset URL.
+     * Logs an error when the referenced file does not exist.
+     */
     public function assetVersion(string $webPath): string
     {
         $filePath = $this->basePath . '/' . ltrim($webPath, '/');
-        $version = file_exists($filePath) ? filemtime($filePath) : time();
+        if (!file_exists($filePath)) {
+            error_log('Asset not found: ' . $filePath);
+            $version = time();
+        } else {
+            $version = filemtime($filePath);
+        }
         return $webPath . '?v=' . $version;
     }
 }

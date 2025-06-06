@@ -18,8 +18,9 @@ class Fingerprint
     {
         $ip = $request->getServerParams()['REMOTE_ADDR'] ?? '';
         $ua = $request->getServerParams()['HTTP_USER_AGENT'] ?? '';
+        $session_id = $request->getCookieParams()['session_id'] ?? '';
 
-        return hash('sha256', $ip . $ua . $this->secret);
+        return hash('sha256', $ip . $ua. $session_id . $this->secret);
     }
 
     /**

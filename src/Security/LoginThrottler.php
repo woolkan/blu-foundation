@@ -3,14 +3,32 @@ declare(strict_types=1);
 
 namespace Blu\Foundation\Security;
 
+use Blu\Foundation\Core\ConfigManager;
 use Predis\Client;
 
 class LoginThrottler
 {
-    private const string LOGIN_ATTEMPT_KEY = "login_attempts:";
-    private const string LOGIN_BLOCK_KEY = "login_blocks:";
+    private const string LOGIN_ATTEMPT_KEY = 'login_attempts:';
+    private const string LOGIN_BLOCK_KEY = 'login_blocks:';
     public function __construct(private Client $redis, private int $maxAttempts = 5, private int $blockTime = 300, private int $attemptTTL = 900)
     {
+    }
+
+    public static function fromConfig(Client $redis, ConfigManager $config): self
+    {
+        $maxAttempts = $config->has('security.loginThrottler.maxAttempts')
+            ? (int)$config->get('security.loginThrottler.maxAttempts')
+            : 5;
+
+        $blockTime = $config->has('security.loginThrottler.blockTime')
+            ? (int)$config->get('security.loginThrottler.blockTime')
+            : 300;
+
+        $attemptTTL = $config->has('security.loginThrottler.attemptTTL')
+            ? (int)$config->get('security.loginThrottler.attemptTTL')
+            : 900;
+
+        return new self($redis, $maxAttempts, $blockTime, $attemptTTL);
     }
 
     public function registerFailedAttempt(string $ip): void
